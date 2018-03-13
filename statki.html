@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+<meta  charset="utf-8" />
+<title>BattleShip Game - JavaScript</title>
+
+<link rel="stylesheet" href="styl.css" type="text/css" /></head>
+
+
+<script type="text/javascript">
+//window.onload = start;
+
+var yes = new Audio("sound/yes.wav");
+var no = new Audio("sound/no.wav");
+var win = new Audio("sound/win.wav");
+var lose = new Audio("sound/lose.wav");
+
+var hit_var = 0;
+var click = 100;
+var comp_score = 100;
+var comp_wynik = 0;
+var progress = 0;
+	 
+var letter = new Array('A','B','C','D','E','F','G','H','I','J');
+var ships = new Array("B4","D2","D3","D4","D5","D8","D9","D10","F5","F6", "G1","G2","G3","G9","H5","I5","I3","J3", "I8", "I10");
+var hit = new Array(100);
+
+
+function reset_scores(){
+	comp_score=100;
+	comp_wynik=0;
+	click = 100;
+}
+
+
+function check_hit(number){
+	var i = 0;
+	var test = false;
+	while(i<hit.length){
+
+		if(number==hit[i]) test = true;
+		i++;
+
+		}
+	
+	if(test==false){
+		console.log("1");
+		return 1;
+		}
+			else 
+			{
+				console.log("0");
+				return 0;
+			}
+}
+
+
+
+
+function check_string(field_number){
+
+
+	if(progress != 20){
+	    var field_letter_number = 0;
+		var field_letter ="";
+		var field_value = "";
+		var hitted = false;
+	
+		if(field_number<=10) field_letter_number=1;
+	
+		var i = 1;
+			while(i<=10){
+
+				if(field_number<=((i+1)*10) && field_number>(i*10)) field_letter_number=(i+1);
+				i++;
+
+			}
+		    
+		var field_number2 = (field_number-1)%10;
+		field_letter = letter[field_number2];
+		field_value = field_letter + field_letter_number;	
+			
+		i = 0;
+			
+			while(i<ships.length){
+
+				if(field_value == ships[i] && check_hit(field_number)!=0){
+					 document.getElementById(field_value).innerHTML = '<div class="field_hit"></div>';
+					 yes.play();
+					 hit[hit_var] = field_number;
+					 hit_var++;
+					 progress++;
+				 }
+				i++;
+			}
+			
+		i = 0;
+
+			while(i<hit.length){
+
+				if(field_number == hit[i]) hitted = true;
+				i++;
+			}
+					if(hitted==false){
+
+						click--;
+						hit[hit_var] = field_number;
+						hit_var++;
+						no.play();
+						document.getElementById(field_value).innerHTML = '<div class="field_miss"></div>';
+					}
+			
+		 document.getElementById("score").innerHTML = click + " | " + progress + "/" + ships.length;
+	 	
+  }else{
+  	win_test();   
+  }
+}
+	
+	
+	
+	
+function computer(){
+
+	 var random = Math.floor(Math.random()*100)+1;
+	
+	 if(random%3==0)
+	 	comp_wynik++;
+	 else 
+	 	comp_score--;	
+	 
+	 
+	 document.getElementById("computer_score").innerHTML =  comp_score + " | " +comp_wynik+"/"+ships.length;
+	 
+	 
+	 
+	 if(comp_wynik != 20)
+	 	setTimeout("computer()", 300);
+	 else
+	 	win_test();
+}
+	
+
+
+function make_board(){
+
+	var field = "";
+	var i = 0;
+	var k= 0;
+	var j = 0;
+	var tekst = "dupa";
+	var field_name = "";
+	while(i<100){
+
+		j=j%10;
+		if((i%10)==0) k++;
+
+		field_name=letter[j]+( k );
+		field = field + '<div class="field" onclick="check_string('+(i+1)+')" id="'+field_name+'"></div>';
+		i++;
+		j++;
+	}
+     	document.getElementById("board").innerHTML = field;
+}
+
+
+function restart_button(){
+	document.getElementById("button").innerHTML = "powodzenia!";
+}	
+		
+
+function win_test(){
+
+	if(comp_wynik ==20 && progress ==20){
+		if(comp_score>click){
+			document.getElementById("button").innerHTML = "Wygrał komputer!";
+			lose.play();
+		}
+		if(comp_score<click){
+			document.getElementById("button").innerHTML = "Wygrałeś!";
+			win.play();
+		}
+		if(comp_score==click){
+			document.getElementById("button").innerHTML = "Remis!";
+		}
+	}else
+		setTimeout("win_test()", 20); 
+}
+
+
+	
+	
+function start()
+{
+	restart_button();
+	make_board();
+	reset_scores();
+	computer();
+}
+
+
+
+
+
+
+</script>
+</head>
+
+
+<body>
+<div id="body_site">
+	<div id="board_border">
+		<div id="board"></div>
+	</div>
+		<div id="score_board">twój wynik: <div id="score">100 | 0/20</div> | wynik komputera: <div id="computer_score">100 | 0/20</div></div><br/>
+	<div id="button"><input type="submit" onclick="start()" value="start" class="button"></div>
+</div>
+
+</body>
+</html>
