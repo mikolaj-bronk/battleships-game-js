@@ -14,3 +14,7 @@ or check <a href="https://mmiki26.nstrefa.pl/github/battleships/statki.html">Thi
 
 # Screen
 <img src="https://mmiki26.nstrefa.pl/github/battleships/screen.jpg" alt="battlShips">
+
+## ToDo
+- rewrite js code from html to js file
+- board making alghoritm
